@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Compressor</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="brand">bY KAPIL PANDIT</div>
+      <div class="top-links">
+        <span class="brand small">Kapil 007</span>
+        <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">YouTube</a>
+      </div>
+    </div>
+
+    <div class="page">
+      <h1>Image Compressor</h1>
+      <p>Select an image and it will be compressed instantly.</p>
+
+      <label class="upload-box" for="imageInput">
+        <input id="imageInput" type="file" accept="image/*" />
+        <span>Choose an image</span>
+      </label>
+
+      <div id="status" class="status">No image selected yet.</div>
+
+      <div id="sliderWrap" class="slider-wrap" hidden>
+        <div class="slider-label-row">
+          <label for="qualityRange">Compression %</label>
+          <span id="qualityValue" class="quality-value">80%</span>
+        </div>
+        <div class="slider-bubble-wrap">
+          <div id="sliderBubble" class="slider-bubble">80%</div>
+          <input id="qualityRange" type="range" min="20" max="100" value="80" step="1" />
+        </div>
+        <div id="sizeInfo" class="size-info">Adjust the slider to change compression strength.</div>
+      </div>
+
+      <div id="previewWrap" class="preview-wrap" hidden>
+        <img id="previewImage" alt="Compressed preview" />
+        <a id="downloadLink" class="download-link" href="#" download="compressed.jpg" hidden>
+          Download Compressed Image
+        </a>
+      </div>
+
+      <a class="back-link" href="../index.html">Back to Home</a>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bY KAPIL PANDIT</title>
+    <style>
+      :root {
+        --bg: #07111f;
+        --panel: rgba(255, 255, 255, 0.08);
+        --text: #f5f7fb;
+        --muted: #b8c0cf;
+        --accent: #5eead4;
+        --accent-2: #60a5fa;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: radial-gradient(circle at top, #12304d 0%, var(--bg) 50%, #02060d 100%);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px 20px 50px;
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0 30px;
+      }
+
+      .brand {
+        font-size: 1.2rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+
+      .hero {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        min-height: 70vh;
+        padding: 20px 0 30px;
+      }
+
+      .hero p {
+        color: var(--muted);
+        font-size: 1.05rem;
+        margin: 0 0 24px;
+        max-width: 640px;
+      }
+
+      .buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        max-width: 280px;
+      }
+
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .btn {
+        padding: 12px 18px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: #04111c;
+        box-shadow: 0 8px 20px rgba(94, 234, 212, 0.25);
+      }
+
+      .btn-secondary {
+        color: var(--text);
+        background: var(--panel);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      footer {
+        text-align: left;
+        color: var(--muted);
+        padding-top: 10px;
+        font-size: 0.95rem;
+      }
+
+      @media (max-width: 780px) {
+        .hero {
+          min-height: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <nav>
+        <div class="brand">bY KAPIL PANDIT</div>
+        <div class="brand" style="font-size: 0.9rem; opacity: 0.8;">Kapil 007</div>
+      </nav>
+
+      <section class="hero">
+        <p>
+          Few tools on our site.
+        </p>
+        <div class="buttons">
+          <a class="btn btn-primary" href="compress/compressor.html" target="_blank" rel="noopener noreferrer">Image Compressor</a>
+          <a class="btn btn-secondary" href="#">PDF to Word Converter</a>
+        </div>
+      </section>
+
+      <footer>
+        <p>Coming soon — simple tools, made with purpose.</p>
+        <p>
+          For any suggestion contact
+          <a href="mailto:pndkpl007@gmail.com" style="color: var(--accent); text-decoration: none;">pndkpl007@gmail.com</a>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
