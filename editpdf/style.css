@@ -3,6 +3,7 @@
   --text: #f5f7fb;
   --muted: #b8c0cf;
   --accent: #5eead4;
+  --accent-2: #60a5fa;
 }
 
 * {
@@ -51,9 +52,9 @@ body {
 }
 
 .page {
-  max-width: 700px;
+  max-width: 980px;
   margin: 0 auto;
-  padding: 60px 20px;
+  padding: 60px 20px 40px;
   text-align: center;
 }
 
@@ -87,7 +88,7 @@ p {
 }
 
 .status {
-  margin-top: 16px;
+  margin-top: 12px;
   min-height: 24px;
   color: var(--muted);
 }
@@ -96,56 +97,100 @@ p {
   color: #ff8a80;
 }
 
-.progress-wrap {
-  width: 100%;
-  max-width: 380px;
-  margin: 20px auto 0;
-  height: 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  overflow: hidden;
+.editor-tools {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 24px 0 18px;
+  align-items: center;
 }
 
-.progress-bar {
-  width: 0%;
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), #60a5fa);
-  border-radius: inherit;
+.control {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: #04111c;
-  font-size: 0.7rem;
-  font-weight: 700;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.convert-button,
-.download-button {
-  display: inline-block;
-  margin-top: 18px;
+.control select,
+.control input[type="range"] {
+  cursor: pointer;
+}
+
+.action-button {
   padding: 12px 18px;
   border: none;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--accent), #60a5fa);
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
   color: #04111c;
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  text-decoration: none;
 }
 
-.convert-button:hover:not(:disabled),
-.download-button:hover {
+.action-button.secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.action-button:hover {
   transform: translateY(-2px);
 }
 
-.convert-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.pdf-viewer {
+  position: relative;
+  display: inline-block;
+  margin: 10px auto 0;
+  padding: 12px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.3);
+  overflow: auto;
+  max-width: 100%;
 }
 
-.download-button {
-  margin-left: 8px;
+.pdf-viewer canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.text-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.text-layer .text-box {
+  position: absolute;
+  min-width: 40px;
+  padding: 2px 4px;
+  white-space: pre-wrap;
+  color: #111111;
+  cursor: pointer;
+  pointer-events: auto;
+  border: 1px dashed transparent;
+  background: transparent;
+  line-height: 1.2;
+}
+
+.text-layer .text-box.editing {
+  border-color: var(--accent);
+  background: rgba(94, 234, 212, 0.12);
+}
+
+.text-layer .text-box.selected {
+  border-color: var(--accent-2);
+  background: rgba(96, 165, 250, 0.18);
+}
+
+.download-wrap {
+  margin-top: 20px;
 }
 
 .back-link {

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PDF Edit Tool</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="brand">bY KAPIL PANDIT</div>
+      <div class="top-links">
+        <span class="brand small">Kapil 007</span>
+        <a href="https://www.instagram.com/kapel.pandit" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://www.youtube.com/@amkapil007" target="_blank" rel="noopener noreferrer">YouTube</a>
+      </div>
+    </div>
+
+    <div class="page">
+      <h1>PDF Editor</h1>
+      <p>Upload a PDF, edit or remove text directly on the page, and change the font family and size.</p>
+
+      <label class="upload-box" for="pdfInput">
+        <input id="pdfInput" type="file" accept="application/pdf,.pdf" />
+        <span>Choose a PDF file</span>
+      </label>
+
+      <div id="fileName" class="file-name">No file selected yet.</div>
+      <div id="status" class="status">No PDF selected yet.</div>
+
+      <div id="editorTools" class="editor-tools" hidden>
+        <button id="editButton" class="action-button" type="button">Edit Text</button>
+        <button id="doneButton" class="action-button secondary" type="button">Done</button>
+        <button id="removeButton" class="action-button secondary" type="button">Remove Selected</button>
+
+        <label class="control">
+          <span>Font</span>
+          <select id="fontSelect">
+            <option value="Arial">Arial</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Verdana">Verdana</option>
+            <option value="Helvetica">Helvetica</option>
+            <option value="Calibri">Calibri</option>
+            <option value="Cambria">Cambria</option>
+            <option value="Trebuchet MS">Trebuchet MS</option>
+            <option value="Courier New">Courier New</option>
+            <option value="Tahoma">Tahoma</option>
+            <option value="Poppins">Poppins</option>
+            <option value="Inter">Inter</option>
+          </select>
+        </label>
+
+        <label class="control">
+          <span>Size</span>
+          <input id="fontSizeInput" type="range" min="10" max="72" value="24" />
+          <span id="fontSizeValue">24px</span>
+        </label>
+      </div>
+
+      <div id="pdfViewer" class="pdf-viewer" hidden>
+        <canvas id="pdfCanvas"></canvas>
+        <div id="textLayer" class="text-layer"></div>
+      </div>
+
+      <div id="downloadWrap" class="download-wrap" hidden>
+        <button id="downloadButton" class="action-button" type="button">Download My PDF</button>
+      </div>
+
+      <a class="back-link" href="../index.html">Back to Home</a>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script type="module" src="script.js"></script>
+  </body>
+</html>

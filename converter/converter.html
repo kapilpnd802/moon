@@ -18,7 +18,7 @@
 
     <div class="page">
       <h1>PDF to Word Converter</h1>
-      <p>Upload a PDF and turn it into Word document.</p>
+      <p>Upload a PDF and turn it into an editable Word document with best-effort layout preservation.</p>
 
       <label class="upload-box" for="fileInput">
         <input id="fileInput" type="file" accept=".pdf,application/pdf" />
@@ -28,17 +28,16 @@
       <div id="fileName" class="file-name">No file selected yet.</div>
       <div id="status" class="status">No PDF selected yet.</div>
 
+      <div class="progress-wrap" aria-hidden="true">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+
       <button id="convertButton" class="convert-button" type="button" disabled>Convert to Word</button>
+      <a id="downloadButton" class="download-button" href="#" download="converted.docx" hidden>Download DOCX</a>
 
       <a class="back-link" href="../index.html">Back to Home</a>
     </div>
 
-    <script type="module">
-      import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.mjs";
-      window.pdfjsLib = pdfjsLib;
-      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.mjs";
-    </script>
-    <script src="https://unpkg.com/docx@8.0.0/build/index.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

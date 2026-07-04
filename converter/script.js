@@ -2,16 +2,46 @@ const fileInput = document.getElementById("fileInput");
 const fileName = document.getElementById("fileName");
 const status = document.getElementById("status");
 const convertButton = document.getElementById("convertButton");
+const progressBar = document.getElementById("progressBar");
+const downloadButton = document.getElementById("downloadButton");
 
 let selectedFile = null;
+let downloadUrl = null;
+
+function resetProgress() {
+  progressBar.style.width = "0%";
+  progressBar.textContent = "0%";
+}
+
+function setStatus(message, isError = false) {
+  status.textContent = message;
+  status.classList.toggle("error", isError);
+}
+
+function updateProgress(percent, label) {
+  progressBar.style.width = `${Math.max(0, Math.min(100, percent))}%`;
+  progressBar.textContent = label || `${Math.round(percent)}%`;
+}
+
+function clearDownloadLink() {
+  if (downloadUrl) {
+    URL.revokeObjectURL(downloadUrl);
+    downloadUrl = null;
+  }
+  downloadButton.hidden = true;
+  downloadButton.removeAttribute("href");
+  downloadButton.setAttribute("download", "converted.docx");
+}
 
 fileInput.addEventListener("change", (event) => {
   const file = event.target.files[0];
+  clearDownloadLink();
+  resetProgress();
 
   if (!file) {
     selectedFile = null;
     fileName.textContent = "No file selected yet.";
-    status.textContent = "No PDF selected yet.";
+    setStatus("No PDF selected yet.");
     convertButton.disabled = true;
     return;
   }
@@ -19,119 +49,107 @@ fileInput.addEventListener("change", (event) => {
   if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
     selectedFile = null;
     fileName.textContent = "Please choose a valid PDF file.";
-    status.textContent = "Only PDF files are supported.";
-    status.classList.add("error");
+    setStatus("Only PDF files are supported.", true);
     convertButton.disabled = true;
     return;
   }
 
   selectedFile = file;
   fileName.textContent = file.name;
-  status.textContent = `Selected: ${file.name}`;
-  status.classList.remove("error");
+  setStatus(`Selected: ${file.name}`);
   convertButton.disabled = false;
 });
-
-function extractTextLayout(textContent) {
-  const items = (textContent.items || [])
-    .filter((item) => item && typeof item.str === "string" && item.str.trim())
-    .map((item) => {
-      const transform = item.transform || [];
-      const x = transform[4] || 0;
-      const y = transform[5] || 0;
-
-      return {
-        text: item.str.replace(/\s+/g, " ").trim(),
-        x,
-        y,
-      };
-    });
-
-  if (items.length === 0) {
-    return [];
-  }
-
-  const sortedItems = items.slice().sort((a, b) => b.y - a.y || a.x - b.x);
-  const lines = [];
-  let currentLine = null;
-
-  sortedItems.forEach((item) => {
-    if (currentLine && Math.abs(item.y - currentLine.y) <= 8) {
-      currentLine.items.push(item);
-    } else {
-      if (currentLine) {
-        lines.push(currentLine);
-      }
-      currentLine = { y: item.y, items: [item] };
-    }
-  });
-
-  if (currentLine) {
-    lines.push(currentLine);
-  }
-
-  return lines
-    .map((line) => line.items.sort((a, b) => a.x - b.x).map((item) => item.text).join(" "))
-    .filter(Boolean);
-}
-
-function buildWordDocument(lines) {
-  const { Document, Packer, Paragraph, TextRun } = window.docx;
-  const paragraphs = lines.map((line) => new Paragraph({ children: [new TextRun(line)] }));
-
-  if (paragraphs.length === 0) {
-    paragraphs.push(new Paragraph({ children: [new TextRun("No text was found in the selected PDF.")] }));
-  }
-
-  return new Document({ sections: [{ properties: {}, children: paragraphs }] });
-}
 
 convertButton.addEventListener("click", async () => {
   if (!selectedFile) {
     return;
   }
 
-  if (!window.pdfjsLib || !window.docx) {
-    status.textContent = "The converter libraries could not be loaded. Please refresh the page.";
-    status.classList.add("error");
-    return;
-  }
-
-  status.textContent = `Preparing conversion for ${selectedFile.name}...`;
+  clearDownloadLink();
+  setStatus(`Uploading ${selectedFile.name}...`);
   convertButton.disabled = true;
   convertButton.textContent = "Converting...";
+  updateProgress(10, "10%");
+
+  const formData = new FormData();
+  formData.append("pdf", selectedFile);
 
   try {
-    const arrayBuffer = await selectedFile.arrayBuffer();
-    const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    let fullText = "";
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/convert", true);
+    xhr.responseType = "blob";
 
-    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
-      const page = await pdf.getPage(pageNumber);
-      const textContent = await page.getTextContent();
-      const pageLines = extractTextLayout(textContent);
-      fullText += `${pageLines.join("\n")}\n\n`;
-    }
+    xhr.upload.addEventListener("progress", (event) => {
+      if (event.lengthComputable) {
+        const percent = Math.round((event.loaded / event.total) * 100);
+        updateProgress(percent, `${percent}%`);
+        if (percent < 100) {
+          setStatus(`Uploading ${selectedFile.name}...`);
+        }
+      }
+    });
 
-    const doc = buildWordDocument(fullText.split(/\n{2,}/).map((entry) => entry.trim()).filter(Boolean));
-    const blob = await window.docx.Packer.toBlob(doc);
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${selectedFile.name.replace(/\.pdf$/i, "") || "converted"}.docx`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    xhr.addEventListener("load", async () => {
+      if (xhr.status >= 400) {
+        let message = "Conversion failed. Please try another PDF file.";
+        try {
+          const parsed = JSON.parse(await xhr.response.text());
+          if (parsed?.error) {
+            message = parsed.error;
+          }
+        } catch (error) {
+          console.error(error);
+        }
 
-    status.textContent = `Converted ${selectedFile.name} successfully.`;
-    status.classList.remove("error");
+        setStatus(message, true);
+        updateProgress(0, "0%");
+        convertButton.disabled = false;
+        convertButton.textContent = "Convert to Word";
+        return;
+      }
+
+      updateProgress(100, "Done");
+      setStatus("Conversion complete. Preparing download...");
+
+      const blob = xhr.response;
+      if (!blob || blob.size === 0) {
+        setStatus("The server did not return a DOCX file.", true);
+        convertButton.disabled = false;
+        convertButton.textContent = "Convert to Word";
+        return;
+      }
+
+      downloadUrl = URL.createObjectURL(blob);
+      downloadButton.href = downloadUrl;
+      downloadButton.download = `${selectedFile.name.replace(/\.pdf$/i, "") || "converted"}.docx`;
+      downloadButton.hidden = false;
+      setStatus("Conversion complete. Download your DOCX file.");
+
+      convertButton.disabled = false;
+      convertButton.textContent = "Convert to Word";
+    });
+
+    xhr.addEventListener("error", () => {
+      setStatus("The upload failed. Please check your connection and try again.", true);
+      updateProgress(0, "0%");
+      convertButton.disabled = false;
+      convertButton.textContent = "Convert to Word";
+    });
+
+    xhr.addEventListener("timeout", () => {
+      setStatus("The conversion timed out. Please try a smaller or simpler PDF.", true);
+      updateProgress(0, "0%");
+      convertButton.disabled = false;
+      convertButton.textContent = "Convert to Word";
+    });
+
+    xhr.timeout = 600000;
+    xhr.send(formData);
   } catch (error) {
     console.error(error);
-    status.textContent = "Conversion failed. Please try another PDF file.";
-    status.classList.add("error");
-  } finally {
-    convertButton.textContent = "Convert to Word";
+    setStatus("Conversion failed. Please try another PDF file.", true);
+    updateProgress(0, "0%");
     convertButton.disabled = false;
+    convertButton.textContent = "Convert to Word";
   }
 });
