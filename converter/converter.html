@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PDF to Word Converter</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="brand">bY KAPIL PANDIT</div>
+      <div class="top-links">
+        <span class="brand small">Kapil 007</span>
+        <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">YouTube</a>
+      </div>
+    </div>
+
+    <div class="page">
+      <h1>PDF to Word Converter</h1>
+      <p>Upload a PDF and turn it into Word document.</p>
+
+      <label class="upload-box" for="fileInput">
+        <input id="fileInput" type="file" accept=".pdf,application/pdf" />
+        <span>Choose a PDF file</span>
+      </label>
+
+      <div id="fileName" class="file-name">No file selected yet.</div>
+      <div id="status" class="status">No PDF selected yet.</div>
+
+      <button id="convertButton" class="convert-button" type="button" disabled>Convert to Word</button>
+
+      <a class="back-link" href="../index.html">Back to Home</a>
+    </div>
+
+    <script type="module">
+      import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.mjs";
+      window.pdfjsLib = pdfjsLib;
+      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.mjs";
+    </script>
+    <script src="https://unpkg.com/docx@8.0.0/build/index.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

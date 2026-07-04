@@ -1,0 +1,126 @@
+:root {
+  --bg: #07111f;
+  --text: #f5f7fb;
+  --muted: #b8c0cf;
+  --accent: #5eead4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: radial-gradient(circle at top, #12304d 0%, var(--bg) 50%, #02060d 100%);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 20px 0;
+}
+
+.brand {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.brand.small {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.top-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.top-links a {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.page {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+}
+
+p {
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+
+.upload-box {
+  display: inline-block;
+  padding: 18px 24px;
+  border: 2px dashed var(--accent);
+  border-radius: 16px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.upload-box input {
+  display: none;
+}
+
+.file-name {
+  margin-top: 12px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 20px;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.status {
+  margin-top: 16px;
+  min-height: 24px;
+  color: var(--muted);
+}
+
+.status.error {
+  color: #ff8a80;
+}
+
+.convert-button {
+  margin-top: 18px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), #60a5fa);
+  color: #04111c;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.convert-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.convert-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
