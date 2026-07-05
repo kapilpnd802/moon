@@ -5,6 +5,9 @@ import { fileURLToPath } from "node:url";
 import { createCanvas } from "canvas";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
 import * as docx from "docx";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -135,6 +138,26 @@ function buildWordDocument(pageEntries) {
 
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });
+});
+
+app.post("/api/math2/verify", express.json(), (req, res) => {
+  const submittedPassword = req.body?.password;
+  const expectedPassword = process.env.MATH2_PASSWORD;
+
+  if (submittedPassword === expectedPassword) {
+    return res.json({ ok: true });
+  }
+
+  return res.status(401).json({ ok: false, message: "Incorrect password" });
+});
+
+app.get("/api/math2/book", (req, res) => {
+  const pdfPath = path.join(__dirname, "MATH2", "book1.pdf");
+  res.sendFile(pdfPath, (error) => {
+    if (error) {
+      res.status(404).send("PDF not found");
+    }
+  });
 });
 
 app.post("/api/convert", upload.single("pdf"), async (req, res) => {

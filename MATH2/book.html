@@ -89,6 +89,18 @@
         gap: 10px;
       }
 
+      .open-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 16px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: #03111b;
+        text-decoration: none;
+        font-weight: 700;
+      }
+
       .btn {
         border: none;
         border-radius: 999px;
@@ -102,17 +114,6 @@
       .btn-primary {
         background: linear-gradient(135deg, var(--accent), var(--accent-2));
         color: #03111b;
-      }
-
-      .file-label {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 14px;
-        border-radius: 999px;
-        background: linear-gradient(135deg, rgba(94, 234, 212, 0.18), rgba(96, 165, 250, 0.18));
-        font-weight: 700;
-        cursor: pointer;
       }
 
       .page-box {
@@ -187,11 +188,8 @@
       <section class="panel">
         <div class="toolbar">
           <div class="toolbar-left">
-            <label class="file-label" for="pdfFile">
-              📘 Upload PDF
-            </label>
-            <input id="pdfFile" type="file" accept="application/pdf" hidden />
-            <div class="status" id="statusText">No PDF loaded yet.</div>
+            <a class="open-btn" href="book1.pdf" target="_blank" rel="noopener noreferrer">📘 MATH2</a>
+            <div class="status" id="statusText">Opening the PDF directly.</div>
           </div>
 
           <div class="toolbar-right">
@@ -214,7 +212,6 @@
     </div>
 
     <script>
-      const pdfFile = document.getElementById("pdfFile");
       const pdfViewer = document.getElementById("pdfViewer");
       const statusText = document.getElementById("statusText");
       const prevBtn = document.getElementById("prevBtn");
@@ -222,53 +219,20 @@
       const jumpBtn = document.getElementById("jumpBtn");
       const pageInput = document.getElementById("pageInput");
 
-      let objectUrl = null;
       let currentPage = 1;
 
-      function setPlaceholder(message) {
-        pdfViewer.srcdoc = `<!DOCTYPE html><html><body style="margin:0;font-family:Segoe UI;background:#fcf7ef;color:#8d7141;display:grid;place-items:center;min-height:100vh;"><div style="text-align:center"><h3 style="margin:0 0 8px">${message}</h3><p style="margin:0;color:#9b8771">Upload a PDF to start reading</p></div></body></html>`;
-      }
-
       function updateButtons() {
-        prevBtn.disabled = !objectUrl || currentPage <= 1;
-        nextBtn.disabled = !objectUrl;
+        prevBtn.disabled = currentPage <= 1;
+        nextBtn.disabled = false;
       }
 
       function renderCurrentPage() {
-        if (!objectUrl) {
-          pdfViewer.src = "book1.pdf#page=" + currentPage;
-          updateButtons();
-          return;
-        }
-
-        pdfViewer.src = `${objectUrl}#page=${currentPage}`;
+        pdfViewer.src = "book1.pdf#page=" + currentPage;
         updateButtons();
       }
 
-      function loadPdf(file) {
-        if (!file) return;
-
-        if (objectUrl) URL.revokeObjectURL(objectUrl);
-
-        objectUrl = URL.createObjectURL(file);
-        currentPage = 1;
-        pageInput.value = currentPage;
-        statusText.textContent = `${file.name} is ready.`;
-        renderCurrentPage();
-      }
-
-      function loadDefaultPdf() {
-        statusText.textContent = "Loading default book PDF...";
-        renderCurrentPage();
-      }
-
-      pdfFile.addEventListener("change", (event) => {
-        const [file] = event.target.files || [];
-        if (file) loadPdf(file);
-      });
-
       prevBtn.addEventListener("click", () => {
-        if (objectUrl && currentPage > 1) {
+        if (currentPage > 1) {
           currentPage -= 1;
           pageInput.value = currentPage;
           renderCurrentPage();
@@ -276,15 +240,12 @@
       });
 
       nextBtn.addEventListener("click", () => {
-        if (objectUrl) {
-          currentPage += 1;
-          pageInput.value = currentPage;
-          renderCurrentPage();
-        }
+        currentPage += 1;
+        pageInput.value = currentPage;
+        renderCurrentPage();
       });
 
       jumpBtn.addEventListener("click", () => {
-        if (!objectUrl) return;
         const requested = parseInt(pageInput.value, 10);
         if (Number.isFinite(requested) && requested > 0) {
           currentPage = requested;
@@ -298,7 +259,8 @@
         }
       });
 
-      loadDefaultPdf();
+      statusText.textContent = "Opening the PDF directly.";
+      renderCurrentPage();
       updateButtons();
     </script>
   </body>
