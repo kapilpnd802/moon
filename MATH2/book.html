@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BCA Book Reader</title>
+    <style>
+      :root {
+        --bg: #07111f;
+        --panel: rgba(255, 255, 255, 0.08);
+        --text: #f5f7fb;
+        --muted: #b8c0cf;
+        --accent: #5eead4;
+        --accent-2: #60a5fa;
+        --paper: #f8efe2;
+        --ink: #261f18;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text);
+        background: radial-gradient(circle at top, #14395b 0%, var(--bg) 55%, #02060d 100%);
+      }
+
+      .container {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 24px 20px 40px;
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 20px;
+      }
+
+      .brand {
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+
+      .hero {
+        text-align: center;
+        padding: 8px 0 24px;
+      }
+
+      .hero h1 {
+        margin: 0 0 10px;
+        font-size: clamp(1.9rem, 3.4vw, 2.8rem);
+      }
+
+      .hero p {
+        margin: 0 auto;
+        max-width: 720px;
+        color: var(--muted);
+        font-size: 1rem;
+      }
+
+      .panel {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 24px;
+        padding: 18px;
+        backdrop-filter: blur(14px);
+        box-shadow: 0 16px 42px rgba(2, 6, 23, 0.3);
+      }
+
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .toolbar-left,
+      .toolbar-right {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .btn {
+        border: none;
+        border-radius: 999px;
+        padding: 10px 14px;
+        font-weight: 700;
+        cursor: pointer;
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: #03111b;
+      }
+
+      .file-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(94, 234, 212, 0.18), rgba(96, 165, 250, 0.18));
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .page-box {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 8px 12px;
+        border-radius: 999px;
+      }
+
+      .page-box input {
+        width: 70px;
+        border: none;
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-weight: 700;
+      }
+
+      .status {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .viewer {
+        border-radius: 18px;
+        overflow: hidden;
+        background: linear-gradient(135deg, var(--paper), #e6d4b0);
+        border: 1px solid rgba(0, 0, 0, 0.14);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+      }
+
+      .viewer iframe {
+        width: 100%;
+        min-height: 76vh;
+        border: none;
+        background: #ffffff;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-top: 16px;
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      @media (max-width: 700px) {
+        .toolbar {
+          justify-content: center;
+        }
+
+        .toolbar-left,
+        .toolbar-right {
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <nav>
+        <div class="brand">bY KAPIL PANDIT</div>
+        <div class="brand" style="font-size:0.85rem; opacity:0.8;">Kapil 007</div>
+      </nav>
+
+      <section class="hero">
+        <h1>BCA Book Reader</h1>
+        <p>Upload your PDF and read it here with simple next/previous controls and a direct page-number jump feature.</p>
+      </section>
+
+      <section class="panel">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <label class="file-label" for="pdfFile">
+              📘 Upload PDF
+            </label>
+            <input id="pdfFile" type="file" accept="application/pdf" hidden />
+            <div class="status" id="statusText">No PDF loaded yet.</div>
+          </div>
+
+          <div class="toolbar-right">
+            <button class="btn" id="prevBtn" type="button">← Previous</button>
+            <div class="page-box">
+              <label for="pageInput">Page</label>
+              <input id="pageInput" type="number" min="1" value="1" />
+              <button class="btn" id="jumpBtn" type="button">Go</button>
+            </div>
+            <button class="btn btn-primary" id="nextBtn" type="button">Next →</button>
+          </div>
+        </div>
+
+        <div class="viewer">
+          <iframe id="pdfViewer" title="Book PDF Viewer"></iframe>
+        </div>
+
+        <a class="back-link" href="../index.html">← Back to homepage</a>
+      </section>
+    </div>
+
+    <script>
+      const pdfFile = document.getElementById("pdfFile");
+      const pdfViewer = document.getElementById("pdfViewer");
+      const statusText = document.getElementById("statusText");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const jumpBtn = document.getElementById("jumpBtn");
+      const pageInput = document.getElementById("pageInput");
+
+      let objectUrl = null;
+      let currentPage = 1;
+
+      function setPlaceholder(message) {
+        pdfViewer.srcdoc = `<!DOCTYPE html><html><body style="margin:0;font-family:Segoe UI;background:#fcf7ef;color:#8d7141;display:grid;place-items:center;min-height:100vh;"><div style="text-align:center"><h3 style="margin:0 0 8px">${message}</h3><p style="margin:0;color:#9b8771">Upload a PDF to start reading</p></div></body></html>`;
+      }
+
+      function updateButtons() {
+        prevBtn.disabled = !objectUrl || currentPage <= 1;
+        nextBtn.disabled = !objectUrl;
+      }
+
+      function renderCurrentPage() {
+        if (!objectUrl) {
+          pdfViewer.src = "book1.pdf#page=" + currentPage;
+          updateButtons();
+          return;
+        }
+
+        pdfViewer.src = `${objectUrl}#page=${currentPage}`;
+        updateButtons();
+      }
+
+      function loadPdf(file) {
+        if (!file) return;
+
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+
+        objectUrl = URL.createObjectURL(file);
+        currentPage = 1;
+        pageInput.value = currentPage;
+        statusText.textContent = `${file.name} is ready.`;
+        renderCurrentPage();
+      }
+
+      function loadDefaultPdf() {
+        statusText.textContent = "Loading default book PDF...";
+        renderCurrentPage();
+      }
+
+      pdfFile.addEventListener("change", (event) => {
+        const [file] = event.target.files || [];
+        if (file) loadPdf(file);
+      });
+
+      prevBtn.addEventListener("click", () => {
+        if (objectUrl && currentPage > 1) {
+          currentPage -= 1;
+          pageInput.value = currentPage;
+          renderCurrentPage();
+        }
+      });
+
+      nextBtn.addEventListener("click", () => {
+        if (objectUrl) {
+          currentPage += 1;
+          pageInput.value = currentPage;
+          renderCurrentPage();
+        }
+      });
+
+      jumpBtn.addEventListener("click", () => {
+        if (!objectUrl) return;
+        const requested = parseInt(pageInput.value, 10);
+        if (Number.isFinite(requested) && requested > 0) {
+          currentPage = requested;
+          renderCurrentPage();
+        }
+      });
+
+      pageInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          jumpBtn.click();
+        }
+      });
+
+      loadDefaultPdf();
+      updateButtons();
+    </script>
+  </body>
+</html>
